@@ -1,42 +1,88 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: 220 15% 95%; /* Light Background: #F2F4F8 */
+    --foreground: 222 27% 15%; /* Light Text: #262A39 */
+    --card: 220 15% 100%;
+    --card-foreground: 222 27% 15%;
+    --popover: 220 15% 100%;
+    --popover-foreground: 222 27% 15%;
+    --primary: 222 70% 40%; /* Primary: #3261C7 */
+    --primary-foreground: 220 15% 95%; /* Text on Primary */
+    --secondary: 220 15% 90%;
+    --secondary-foreground: 222 27% 15%;
+    --muted: 220 15% 85%;
+    --muted-foreground: 222 27% 45%; /* Muted text a bit lighter */
+    --accent: 190 60% 45%; /* Accent: #45A7B5 */
+    --accent-foreground: 220 15% 95%; /* Text on Accent */
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 220 10% 85%;
+    --input: 220 10% 90%;
+    --ring: 222 70% 50%; /* Ring color related to primary */
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+
+    --sidebar-background: 220 15% 98%;
+    --sidebar-foreground: 222 27% 25%;
+    --sidebar-primary: 222 70% 40%;
+    --sidebar-primary-foreground: 220 15% 98%;
+    --sidebar-accent: 220 15% 92%;
+    --sidebar-accent-foreground: 222 70% 40%;
+    --sidebar-border: 220 10% 88%;
+    --sidebar-ring: 222 70% 50%;
+  }
+
+  .dark {
+    --background: 215 28% 17%; /* Dark Background: #1E293B */
+    --foreground: 210 40% 98%; /* Dark Text: #F1F5F9 */
+    --card: 215 28% 17%;
+    --card-foreground: 210 40% 98%;
+    --popover: 215 28% 17%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 222 70% 55%; /* Lighter Primary for Dark Mode */
+    --primary-foreground: 215 28% 10%; /* Darker Text on Primary */
+    --secondary: 215 28% 22%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 215 28% 25%;
+    --muted-foreground: 210 40% 60%; /* Muted text a bit darker */
+    --accent: 190 60% 55%; /* Lighter Accent for Dark Mode */
+    --accent-foreground: 215 28% 10%; /* Darker Text on Accent */
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 215 28% 25%;
+    --input: 215 28% 22%;
+    --ring: 222 70% 60%; /* Ring color related to primary */
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+
+    --sidebar-background: 215 28% 15%;
+    --sidebar-foreground: 210 40% 90%;
+    --sidebar-primary: 222 70% 55%;
+    --sidebar-primary-foreground: 215 28% 15%;
+    --sidebar-accent: 215 28% 20%;
+    --sidebar-accent-foreground: 222 70% 55%;
+    --sidebar-border: 215 28% 22%;
+    --sidebar-ring: 222 70% 60%;
   }
 }
 
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    /* Removed default font-family, Tailwind handles it via font-body class */
   }
 }
