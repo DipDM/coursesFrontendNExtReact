@@ -42,7 +42,7 @@ export async function getCourseById(id: number): Promise<Course | null> {
 }
 
 export async function updateCourse(id: number, payload: Partial<CoursePayload>): Promise<Course> {
-  const response = await fetch(`${API_BASE_URL}/courses/${id}/update`, {
+  const response = await fetch(`${API_BASE_URL}/courses/${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
@@ -95,14 +95,14 @@ export async function fetchInstancesByYearSemester(year: number, semester: numbe
 }
 
 
-export async function getInstanceById(year: number, semester: number, id: number): Promise<CourseInstanceResponse | null> {
+export async function getInstanceById(year: number, semester: number, course_id: number): Promise<CourseInstanceResponse | null> {
   // Assuming instance ID is unique within a given year and semester
-  const response = await fetch(`${API_BASE_URL}/instances/${year}/${semester}/${id}`);
+  const response = await fetch(`${API_BASE_URL}/instances/${year}/${semester}/${course_id}`);
   return handleResponse<CourseInstanceResponse | null>(response);
 }
 
 export async function updateInstance(year: number, semester: number, id: number, payload: Partial<CourseInstancePayload>): Promise<CourseInstanceResponse> {
-  const response = await fetch(`${API_BASE_URL}/instances/${id}/update`, {
+  const response = await fetch(`${API_BASE_URL}/instances/${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
@@ -110,8 +110,8 @@ export async function updateInstance(year: number, semester: number, id: number,
   return handleResponse<CourseInstanceResponse>(response);
 }
 
-export async function deleteInstance(year: number, semester: number, id: number): Promise<void> {
-  const response = await fetch(`${API_BASE_URL}/instances/${year}/${semester}/${id}`, {
+export async function deleteInstance(year: number, semester: number, course_id: number): Promise<void> {
+  const response = await fetch(`${API_BASE_URL}/instances/${year}/${semester}/${course_id}`, {
     method: 'DELETE',
   });
   await handleResponse<void>(response);

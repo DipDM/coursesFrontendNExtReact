@@ -17,8 +17,8 @@ import type { InstanceFilterValues } from '@/zod-schemas';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const defaultFilters: InstanceFilterValues = {
-    year: new Date().getFullYear(),
-    semester: 1,
+    year: undefined,
+    semester: undefined,
 };
 
 export default function InstancesPage() {
@@ -89,14 +89,23 @@ export default function InstancesPage() {
     }, [loadCoursesForForm]);
 
     const handleFilterChange = useCallback((newFilters: InstanceFilterValues) => {
-        setFilters(newFilters);
-        loadInstances(newFilters);
+        // Only apply filter if at least one filter is provided
+        const hasValidFilter = newFilters.year || newFilters.semester;
+
+        if (hasValidFilter) {
+            setShowAll(false);
+            setFilters(newFilters);
+            loadInstances(newFilters);
+        }
     }, [loadInstances]);
 
+
     const handleClearFilters = useCallback(() => {
-        setFilters(defaultFilters); // Reset the page's filter state to defaults
-        loadInstances(); // Load all instances
+        setShowAll(true); // show all instances
+        setFilters({});   // clear filters
+        loadInstances();
     }, [loadInstances]);
+
 
     const handleCreateNew = () => {
         if (courses.length === 0) {
@@ -128,7 +137,7 @@ export default function InstancesPage() {
 
     const confirmDeleteInstance = async (instance: CourseInstanceResponse) => {
         try {
-            await apiDeleteInstance(instance.year, instance.semester, instance.id);
+            await apiDeleteInstance(instance.year, instance.semester, instance.course_id);
             toast({ title: "Success", description: "Instance deleted successfully." });
             loadInstances(filters);
             setIsDeleteAlertOpen(false);

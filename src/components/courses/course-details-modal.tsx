@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
 import React, { useEffect, useState } from 'react';
 import type { Course } from '@/types';
-import { getCourseById } from '@/lib/api';
+import { getCourseById, fetchCourses } from '@/lib/api';
 import {
   Dialog,
   DialogContent,
@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
 
 interface CourseDetailsModalProps {
   courseId: number | null;
@@ -24,6 +25,7 @@ interface CourseDetailsModalProps {
 
 export function CourseDetailsModal({ courseId, isOpen, onClose }: CourseDetailsModalProps) {
   const [course, setCourse] = useState<Course | null>(null);
+  const [allCourses, setAllCourses] = useState<Course[]>([]); // ✅ moved inside the component
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
@@ -32,10 +34,12 @@ export function CourseDetailsModal({ courseId, isOpen, onClose }: CourseDetailsM
       const fetchCourseDetails = async () => {
         setLoading(true);
         try {
+          const courseList = await fetchCourses();
+          setAllCourses(courseList);
           const data = await getCourseById(courseId);
           setCourse(data);
         } catch (error) {
-           const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred.";
+          const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred.";
           toast({
             title: "Error",
             description: `Failed to fetch course details: ${errorMessage}`,
@@ -78,6 +82,25 @@ export function CourseDetailsModal({ courseId, isOpen, onClose }: CourseDetailsM
               <h3 className="text-sm font-medium text-muted-foreground">Description</h3>
               <p className="text-base text-foreground/80 whitespace-pre-wrap">{course.description}</p>
             </div>
+            {(course?.prerequisites ?? []).length > 0 && (
+              <div className="space-y-1">
+                <h3 className="text-sm font-medium text-muted-foreground">Prerequisites</h3>
+                <div className="flex flex-wrap gap-2">
+                  {(course?.prerequisites ?? []).map((pid) => {
+                    const prereq = allCourses.find(c => c.id === pid);
+                    return prereq ? (
+                      <Badge key={pid} variant="outline">
+                        {prereq.code} - {prereq.name}
+                      </Badge>
+                    ) : (
+                      <Badge key={pid} variant="destructive">
+                        Unknown Course ({pid})
+                      </Badge>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <DialogDescription>No course details found.</DialogDescription>

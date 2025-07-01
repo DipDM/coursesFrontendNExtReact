@@ -2,13 +2,14 @@
 
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
-import * as api from '@/lib/data-service';
+import * as api from '@/lib/api';
 import type { CourseFormData, CourseInstanceFormData } from '@/types';
 
 const courseFormSchema = z.object({
+  code: z.string().min(2, "Code must be at least 2 characters"),
   name: z.string().min(3, "Name must be at least 3 characters"),
   description: z.string().min(10, "Description must be at least 10 characters"),
-  credits: z.coerce.number().min(0.5, "Credits must be at least 0.5").max(10, "Credits cannot exceed 10"),
+  
 });
 
 export async function createCourseAction(formData: CourseFormData) {
@@ -31,7 +32,7 @@ export async function createCourseAction(formData: CourseFormData) {
   }
 }
 
-export async function deleteCourseAction(id: string) {
+export async function deleteCourseAction(id: number) {
   try {
     await api.deleteCourse(id);
     revalidatePath('/courses');
@@ -45,7 +46,10 @@ export async function deleteCourseAction(id: string) {
 const instanceFormSchema = z.object({
   courseId: z.string().min(1, "Course selection is required"),
   year: z.coerce.number().min(new Date().getFullYear() - 5, "Year is too far in the past").max(new Date().getFullYear() + 5, "Year is too far in the future"),
-  semester: z.enum(["Fall", "Spring", "Summer", "Winter"], { required_error: "Semester is required" }),
+  semester: z.coerce
+    .number({ invalid_type_error: "Semester must be a number" })
+    .min(1, "Semester must be between 1 and 8")
+    .max(8, "Semester must be between 1 and 8"),
   instructor: z.string().min(3, "Instructor name must be at least 3 characters"),
   location: z.string().min(2, "Location must be at least 2 characters"),
 });
@@ -61,20 +65,26 @@ export async function createInstanceAction(formData: CourseInstanceFormData) {
       fieldErrors: validatedFields.error.flatten().fieldErrors,
     };
   }
-  
+
   try {
-    const newInstance = await api.createInstance(validatedFields.data);
+    const payload = {
+      course_id: Number(validatedFields.data.courseId),
+      year: validatedFields.data.year,
+      semester: validatedFields.data.semester,
+      instructor: validatedFields.data.instructor,
+    };
+    const newInstance = await api.createInstance(payload);
     revalidatePath(`/instances/${newInstance.year}/${newInstance.semester}`);
-    revalidatePath('/instances'); // For the main instance page if it shows recent ones or needs refresh
+    revalidatePath('/instances');
     return { success: true, data: newInstance };
   } catch (error) {
     return { success: false, error: error instanceof Error ? error.message : "Failed to create instance." };
   }
 }
 
-export async function deleteInstanceAction(year: number, semester: string, id: string) {
+export async function deleteInstanceAction(year: number, semester: number, course_id: number) {
   try {
-    await api.deleteInstance(year, semester, id);
+    await api.deleteInstance(year, semester, course_id);
     revalidatePath(`/instances/${year}/${semester}`);
     revalidatePath('/instances');
     return { success: true, message: "Instance deleted successfully." };

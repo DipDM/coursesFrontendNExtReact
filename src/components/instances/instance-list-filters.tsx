@@ -1,4 +1,3 @@
-
 "use client"
 
 import React from 'react';
@@ -22,14 +21,12 @@ interface InstanceListFiltersProps {
 export function InstanceListFilters({ 
   onFilterChange, 
   onClearFilters,
-  initialYear = new Date().getFullYear(), 
-  initialSemester = 1 
 }: InstanceListFiltersProps) {
   const form = useForm<InstanceFilterValues>({
     resolver: zodResolver(InstanceFilterSchema),
     defaultValues: {
-      year: initialYear,
-      semester: initialSemester,
+      year: undefined,
+      semester: undefined,
     },
   });
 
@@ -38,7 +35,7 @@ export function InstanceListFilters({
   };
 
   const handleClear = () => {
-    form.reset({ year: initialYear, semester: initialSemester });
+    form.reset({ year: undefined, semester: undefined });
     onClearFilters();
   };
 
@@ -53,17 +50,18 @@ export function InstanceListFilters({
       <CardContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 items-end">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 items-end ease-in-out transform">
               <FormField
                 control={form.control}
                 name="year"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Year</FormLabel>
+                    <FormLabel>Year</FormLabel><FormMessage />
                     <FormControl>
-                      <Input type="number" placeholder="e.g., 2024" {...field} />
+                      <Input type="value" placeholder="e.g., 2024" value={field.value ?? ''}
+                        onChange={(e) => field.onChange(e.target.value)} />
                     </FormControl>
-                    <FormMessage />
+                    
                   </FormItem>
                 )}
               />
@@ -72,11 +70,12 @@ export function InstanceListFilters({
                 name="semester"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Semester</FormLabel>
+                    <FormLabel>Semester</FormLabel><FormMessage />
                     <FormControl>
-                      <Input type="number" placeholder="e.g., 1 or 2" {...field} />
+                      <Input type="value" placeholder="e.g., 1 upto 8" value={field.value ?? ''}
+                        onChange={(e) => field.onChange(e.target.value)} />
                     </FormControl>
-                    <FormMessage />
+                    
                   </FormItem>
                 )}
               />

@@ -34,7 +34,7 @@ export function InstanceDetailsModal({ instance, isOpen, onClose }: InstanceDeta
         <div className="space-y-4 py-4">
           <div>
             <h3 className="text-sm font-medium text-muted-foreground">Course</h3>
-            <p className="text-lg font-semibold">{instance.course.name} ({instance.course.code})</p>
+            <p className="text-lg font-semibold">{instance.course_name} ({instance.course_code})</p>
           </div>
           <Separator />
           <div className="grid grid-cols-2 gap-4">
@@ -52,19 +52,19 @@ export function InstanceDetailsModal({ instance, isOpen, onClose }: InstanceDeta
             <h3 className="text-sm font-medium text-muted-foreground">Instructor</h3>
             <p className="text-lg">{instance.instructor}</p>
           </div>
-           {instance.course.description && (
+           {instance.course_description && (
             <>
               <Separator />
               <div>
                 <h3 className="text-sm font-medium text-muted-foreground">Course Description</h3>
-                <p className="text-base text-foreground/80 whitespace-pre-wrap">{instance.course.description}</p>
+                <p className="text-base text-foreground/80 whitespace-pre-wrap">{instance.course_description}</p>
               </div>
             </>
           )}
         </div>
         <DialogClose asChild>
-          <Button type="button" variant="outline" className="mt-4 w-full" onClick={onClose}>
-            Close
+          <Button type="button" variant="outline" className="mt-4 w-full font-bold bg-green-600" onClick={onClose}>
+            Okay
           </Button>
         </DialogClose>
       </DialogContent>

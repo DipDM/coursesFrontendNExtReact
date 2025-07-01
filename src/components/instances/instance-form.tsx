@@ -34,7 +34,7 @@ interface InstanceFormProps {
   onSuccess: () => void;
   courses: Course[];
   instanceToEdit?: CourseInstanceResponse | null;
-  currentFilters: { year: number; semester: number };
+  currentFilters?: { year?: number; semester?: number };
 }
 
 export function InstanceForm({
@@ -52,8 +52,8 @@ export function InstanceForm({
     resolver: zodResolver(InstanceSchema),
     defaultValues: {
       course_id: 0,
-      year: currentFilters.year,
-      semester: currentFilters.semester,
+      year: (currentFilters ?? {}).year ?? new Date().getFullYear(),
+      semester: (currentFilters ?? {}).semester ?? 1,
       instructor: '',
     },
   });
@@ -61,7 +61,7 @@ export function InstanceForm({
   useEffect(() => {
     if (instanceToEdit) {
       form.reset({
-        course_id: instanceToEdit.course.id,
+        course_id: instanceToEdit.course_id,
         year: instanceToEdit.year,
         semester: instanceToEdit.semester,
         instructor: instanceToEdit.instructor,
@@ -69,8 +69,8 @@ export function InstanceForm({
     } else {
       form.reset({
         course_id: courses.length > 0 ? courses[0].id : 0,
-        year: currentFilters.year,
-        semester: currentFilters.semester,
+        year: (currentFilters ?? {}).year ?? new Date().getFullYear(),
+        semester: (currentFilters ?? {}).semester ?? 1,
         instructor: '',
       });
     }
@@ -156,7 +156,7 @@ export function InstanceForm({
                 <FormItem>
                   <FormLabel>Year</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="e.g., 2024" {...field} />
+                    <Input type="value" placeholder="e.g., 2024" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -170,7 +170,7 @@ export function InstanceForm({
                 <FormItem>
                   <FormLabel>Semester</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="e.g., 1 or 2" {...field} />
+                    <Input type="value" placeholder="e.g., 1 or 2" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

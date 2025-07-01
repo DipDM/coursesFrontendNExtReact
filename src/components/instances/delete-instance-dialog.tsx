@@ -42,7 +42,7 @@ export function DeleteInstanceDialog({ instance, isOpen, onClose, onConfirm }: D
           <AlertDialogTitle className="font-headline">Are you sure?</AlertDialogTitle>
           <AlertDialogDescription>
             This action cannot be undone. This will permanently delete the instance for 
-            <span className="font-semibold"> {instance.course.name} ({instance.year} - Semester {instance.semester})</span>.
+            <span className="font-semibold"> {instance.course_name} ({instance.year} - Semester {instance.semester})</span>.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter className="mt-4">

@@ -43,7 +43,7 @@ export function InstanceList({ instances, onViewDetails, onEdit, onDelete, isLoa
   if (instances.length === 0) {
     return (
        <Card className="col-span-full flex flex-col items-center justify-center p-10 border-dashed border-2 rounded-lg shadow-none">
-        <Image src="https://placehold.co/300x200.png" alt="No instances" width={300} height={200} className="mb-6 rounded-md opacity-70 w-full max-w-[240px] h-auto sm:max-w-[300px]" data-ai-hint="empty state calendar" />
+        {/* <Image src="https://placehold.co/300x200.png" alt="No instances" width={300} height={200} className="mb-6 rounded-md opacity-70 w-full max-w-[240px] h-auto sm:max-w-[300px]" data-ai-hint="empty state calendar" /> */}
         <h3 className="text-xl font-semibold text-muted-foreground mb-2">No Instances Found</h3>
         <p className="text-muted-foreground text-center">Try adjusting the filters or add a new instance.</p>
       </Card>
@@ -64,28 +64,28 @@ export function InstanceList({ instances, onViewDetails, onEdit, onDelete, isLoa
               <TableHead className="hidden sm:table-cell">Year</TableHead>
               <TableHead className="hidden sm:table-cell">Semester</TableHead>
               <TableHead>Instructor</TableHead>
-              <TableHead className="text-right w-[200px]">Actions</TableHead>
+              <TableHead className="text-center w-[200px]">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {instances.map((instance) => (
               <TableRow key={instance.id} className="hover:bg-muted/50 transition-colors">
                 <TableCell>
-                  <div className="font-medium">{instance.course.name}</div>
-                  <div className="text-xs text-muted-foreground">{instance.course.code}</div>
+                  <div className="text-xs text-muted-foreground">{instance.course_code}</div>
+                  <div className="font-medium">{instance.course_name}</div>
                 </TableCell>
                 <TableCell className="hidden sm:table-cell">{instance.year}</TableCell>
                 <TableCell className="hidden sm:table-cell">{instance.semester}</TableCell>
                 <TableCell>{instance.instructor}</TableCell>
                 <TableCell className="text-right">
                    <div className="flex justify-end items-center gap-2">
-                    <Button variant="ghost" size="icon" onClick={() => onViewDetails(instance)} aria-label={`View details for ${instance.course.name} instance`}>
+                    <Button variant="ghost" size="icon" onClick={() => onViewDetails(instance)} aria-label={`View details for ${instance.course_name} instance`}>
                       <Eye className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" onClick={() => onEdit(instance)} aria-label={`Edit ${instance.course.name} instance`}>
+                    <Button variant="ghost" size="icon" onClick={() => onEdit(instance)} aria-label={`Edit ${instance.course_name} instance`}>
                       <Edit3 className="h-4 w-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" onClick={() => onDelete(instance)} aria-label={`Delete ${instance.course.name} instance`} className="text-destructive hover:text-destructive hover:bg-destructive/10">
+                    <Button variant="ghost" size="icon" onClick={() => onDelete(instance)} aria-label={`Delete ${instance.course_name} instance`} className="text-destructive hover:text-destructive hover:bg-destructive/10">
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>

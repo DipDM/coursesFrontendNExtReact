@@ -20,10 +20,10 @@ export default function CoursesPage() {
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
-  
+
   const [viewingCourseId, setViewingCourseId] = useState<number | null>(null);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-  
+
   const [deletingCourse, setDeletingCourse] = useState<Course | null>(null);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
 
@@ -72,18 +72,40 @@ export default function CoursesPage() {
     setIsDeleteAlertOpen(true);
   };
 
-  const confirmDeleteCourse = async (courseId: number) => {
+  const confirmDeleteCourse = async (id: number) => {
+    // Check if the course is a prerequisite for any other course
+    const isUsedAsPrerequisite = courses.some(course =>
+      course.prerequisites?.includes(id)
+    );
+
+    if (isUsedAsPrerequisite) {
+      toast({
+        title: "Cannot Delete Course",
+        description: "This course is a prerequisite for other courses. Remove it from those courses before deleting.",
+        variant: "destructive",
+      });
+      setIsDeleteAlertOpen(false);
+      setDeletingCourse(null);
+      return;
+    }
+
+    // Proceed with deletion
     try {
-      await apiDeleteCourse(courseId);
+      await apiDeleteCourse(id);
       toast({ title: "Success", description: "Course deleted successfully." });
       loadCourses(); // Refresh list
       setIsDeleteAlertOpen(false);
       setDeletingCourse(null);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "An unexpected error occurred.";
-      toast({ title: "Error", description: `Failed to delete course: ${errorMessage}`, variant: "destructive" });
+      toast({
+        title: "Error",
+        description: `Failed to delete course: ${errorMessage}`,
+        variant: "destructive",
+      });
     }
   };
+
 
   return (
     <AppLayout>
@@ -101,15 +123,15 @@ export default function CoursesPage() {
         </div>
 
         {error && (
-           <Alert variant="destructive" className="shadow-md">
+          <Alert variant="destructive" className="shadow-md">
             <AlertTriangle className="h-4 w-4" />
             <AlertTitle>Loading Error</AlertTitle>
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
 
-        <CourseList 
-          courses={courses} 
+        <CourseList
+          courses={courses}
           onViewDetails={handleViewDetails}
           onEdit={handleEditCourse}
           onDelete={handleDeleteCourse}
@@ -117,11 +139,12 @@ export default function CoursesPage() {
         />
       </div>
 
-      <CourseForm 
+      <CourseForm
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
         onSuccess={handleFormSuccess}
         courseToEdit={editingCourse}
+        allCourses={courses}
       />
 
       <CourseDetailsModal
@@ -129,7 +152,7 @@ export default function CoursesPage() {
         isOpen={isDetailsModalOpen}
         onClose={() => { setIsDetailsModalOpen(false); setViewingCourseId(null); }}
       />
-      
+
       <DeleteCourseDialog
         course={deletingCourse}
         isOpen={isDeleteAlertOpen}
