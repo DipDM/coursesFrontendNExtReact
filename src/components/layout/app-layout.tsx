@@ -71,7 +71,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           <MobileAppSidebarToggleButton />
         </header>
         
-        <div className="w-full max-w-full overflow-x-hidden pt-6 px-4 md:px-6">
+        <div className="w-full max-w-full overflow-x-hidden pt-4 px-4 md:px-6">
            {children}
         </div>
       </SidebarInset>
