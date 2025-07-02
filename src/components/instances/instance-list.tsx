@@ -56,7 +56,7 @@ export function InstanceList({ instances, onViewDetails, onEdit, onDelete, isLoa
         <CardDescription>View and manage scheduled course instances.</CardDescription>
       </CardHeader>
       <CardContent className="p-0">
-        <Table>
+        <Table className="min-w-[600px] w-full overflow-x-auto">
           <TableHeader>
             <TableRow>
               <TableHead>Course</TableHead>
