@@ -8,8 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Filter, RotateCcw } from 'lucide-react';
-import { fetchInstancesByYearSemester } from '@/lib/api'; 
+import { Filter, RotateCcw } from 'lucide-react'; 
 
 interface InstanceListFiltersProps {
   onFilterChange: (filters: InstanceFilterValues) => void;

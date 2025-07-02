@@ -10,7 +10,7 @@ type ThemeProviderState = {
 };
 
 const initialState: ThemeProviderState = {
-  theme: "system",
+  theme: "light",
   setTheme: () => null,
 };
 
@@ -18,7 +18,7 @@ const ThemeProviderContext = React.createContext<ThemeProviderState>(initialStat
 
 export function ThemeProvider({
   children,
-  defaultTheme = "light",  // ✅ Set default to light
+  defaultTheme = "light",
   storageKey = "vite-ui-theme",
   ...props
 }: {

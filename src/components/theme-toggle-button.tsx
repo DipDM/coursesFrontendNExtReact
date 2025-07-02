@@ -12,7 +12,7 @@ export function ThemeToggleButton() {
     setTheme(theme === "dark" ? "light" : "dark")
   }
   
-  // Avoid hydration mismatch by rendering icon only on client
+  
   const [mounted, setMounted] = React.useState(false)
   React.useEffect(() => setMounted(true), [])
 

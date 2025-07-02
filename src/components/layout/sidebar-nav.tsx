@@ -30,7 +30,7 @@ export function SidebarNav() {
                   ? "bg-sidebar-accent text-sidebar-accent-foreground"
                   : "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
               )}
-              asChild={false} // Ensure it's a button
+              asChild={false}
               isActive={pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href))}
               tooltip={{ children: item.label, side: "right" }}
             >

@@ -13,7 +13,6 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { LoadingSpinner } from '../ui/loading-spinner';
 
 interface DeleteCourseDialogProps {
   course: Course | null;
@@ -31,7 +30,7 @@ export function DeleteCourseDialog({ course, isOpen, onDone , onConfirm }: Delet
 
     if (isDeleting) {
       interval = setInterval(() => {
-        setDotCount((prev) => (prev + 1) % 5); // cycle from 0 to 4
+        setDotCount((prev) => (prev + 1) % 5);
       }, 600);
     }
 
@@ -49,7 +48,7 @@ export function DeleteCourseDialog({ course, isOpen, onDone , onConfirm }: Delet
     }
   };
 
-  // Prevent auto-close while deleting
+
   const handleOpenChange = (open: boolean) => {
     if (!open && !isDeleting) {
       onDone();

@@ -19,7 +19,7 @@ interface DeleteInstanceDialogProps {
   isOpen: boolean;
   onConfirm: (instance: CourseInstanceResponse) => Promise<void>;
   onDone: () => void;
-  onClose?: () => void; // Optional, for consistency with other dialogs
+  onClose?: () => void;
 }
 
 export function DeleteInstanceDialog({ instance, isOpen, onConfirm, onDone }: DeleteInstanceDialogProps) {
@@ -40,7 +40,7 @@ export function DeleteInstanceDialog({ instance, isOpen, onConfirm, onDone }: De
       setIsDeleting(true);
       await onConfirm(instance);
       setIsDeleting(false);
-      onDone(); // Close dialog after deletion
+      onDone();
     }
   };
 

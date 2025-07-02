@@ -26,7 +26,6 @@ import {
 } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
 import { createInstance, updateInstance } from '@/lib/api';
-import { LoadingSpinner } from '@/components/ui/loading-spinner';
 
 interface InstanceFormProps {
   isOpen: boolean;
@@ -195,7 +194,7 @@ export function InstanceForm({
                 <FormItem>
                   <FormLabel>Instructor</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., Dr. Jane Doe" {...field} />
+                    <Input placeholder="e.g., Dr. Gangadhar Sashtri" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

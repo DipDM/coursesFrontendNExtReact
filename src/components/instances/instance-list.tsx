@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Eye, Edit3, Trash2 } from 'lucide-react';
-import Image from 'next/image';
 
 interface InstanceListProps {
   instances: CourseInstanceResponse[];

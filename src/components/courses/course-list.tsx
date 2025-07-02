@@ -43,15 +43,14 @@ export function CourseList({ courses, onViewDetails, onEdit, onDelete, isLoading
   if (courses.length === 0) {
     return (
       <Card className="col-span-full flex flex-col items-center justify-center p-10 border-dashed border-2 rounded-lg shadow-none">
-        <Image src="https://placehold.co/300x200.png" alt="No courses" width={300} height={200} className="mb-6 rounded-md opacity-70 w-full max-w-[240px] h-auto sm:max-w-[300px]" data-ai-hint="empty state illustration" />
+        {/* <Image src="https://placehold.co/300x200.png" alt="No courses" width={300} height={200} className="mb-6 rounded-md opacity-70 w-full max-w-[240px] h-auto sm:max-w-[300px]" data-ai-hint="empty state illustration" /> */}
         <h3 className="text-xl font-semibold text-muted-foreground mb-2">No Courses Yet</h3>
         <p className="text-muted-foreground text-center">Looks like there are no courses available. <br/> Why not add the first one?</p>
       </Card>
     );
   }
   
-  // Using Table for a more structured list view
-  return (
+    return (
     <Card className="shadow-lg overflow-hidden">
       <CardHeader>
         <CardTitle className="font-headline text-2xl">Available Courses</CardTitle>
@@ -73,7 +72,11 @@ export function CourseList({ courses, onViewDetails, onEdit, onDelete, isLoading
                 <TableCell className="font-medium">{course.code}</TableCell>
                 <TableCell>{course.name}</TableCell>
                 <TableCell className="hidden md:table-cell text-sm text-muted-foreground truncate max-w-xs">
-                  {course.description.length > 80 ? `${course.description.substring(0, 80)}...` : course.description}
+                  {course.description
+                    ? (course.description.length > 80
+                        ? `${course.description.substring(0, 80)}...`
+                        : course.description)
+                    : ""}
                 </TableCell>
                 <TableCell className="text-right">
                   <div className="flex justify-end items-center gap-2">

@@ -176,7 +176,7 @@ export function CourseForm({ isOpen, onClose, onSuccess, courseToEdit, allCourse
                 <FormItem>
                   <FormLabel>Prerequisites</FormLabel>
 
-                  {/* ✅ Live Preview Above */}
+                  {/*Live Preview  of prerequesticts*/}
                   {field.value?.length > 0 && (
                     <div
                       className="mb-4 p-3 rounded-lg bg-muted/30 border transition-all duration-300 ease-in-out"
@@ -200,7 +200,6 @@ export function CourseForm({ isOpen, onClose, onSuccess, courseToEdit, allCourse
                     </div>
                   )}
 
-                  {/* ✅ Checkbox Grid Below */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-40 overflow-y-auto border rounded-md p-2 transition-opacity duration-300">
                     {allCourses
                       .filter((c) => c.id !== courseToEdit?.id)

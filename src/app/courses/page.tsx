@@ -155,8 +155,8 @@ export default function CoursesPage() {
         isOpen={isDeleteAlertOpen}
         onConfirm={confirmDeleteCourse}
         onDone={() => {
-          setIsDeleteAlertOpen(false); // ✅ Close dialog only when done
-          setDeletingCourse(null);     // ✅ Reset state
+          setIsDeleteAlertOpen(false); 
+          setDeletingCourse(null);
         }}
       />
 
