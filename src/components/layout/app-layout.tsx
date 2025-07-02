@@ -57,7 +57,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         </SidebarFooter>
       </Sidebar>
       <SidebarRail /> 
-      <SidebarInset>
+      <SidebarInset className="w-full overflow-x-hidden">
         {/* Mobile-only Header */}
         <header className="md:hidden p-4 flex justify-between items-center border-b bg-background sticky top-0 z-20">
           <Link href="/courses" className="flex items-center gap-2">
