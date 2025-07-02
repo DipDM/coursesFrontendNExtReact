@@ -36,13 +36,13 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     <SidebarProvider defaultOpen={true}>
       <Sidebar variant="sidebar" collapsible="icon" side="left">
         <SidebarHeader className="p-4 flex justify-between items-center">
-          <Link href="/courses" className="flex items-center gap-2 group-data-[collapsible=icon]:hidden">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 text-primary">
+          <Link href="/courses" className="flex items-center gap-2 min-w-0 group-data-[collapsible=icon]:hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-8 w-8 flex-shrink-0  text-primary">
               <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
               <path d="M2 17l10 5 10-5"></path>
               <path d="M2 12l10 5 10-5"></path>
             </svg>
-            <h1 className="text-xl font-semibold text-foreground">Course Manager</h1>
+            <h1 className="text-xl font-semibold text-foreground truncate">Course Manager</h1>
           </Link>
           {/* MobileAppSidebarToggleButton is removed from here and placed in the mobile-specific header */}
         </SidebarHeader>
@@ -71,7 +71,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           <MobileAppSidebarToggleButton />
         </header>
         
-        <div className="p-4 md:p-6">
+        <div className="w-full max-w-full overflow-x-hidden px-4 md:px-6">
            {children}
         </div>
       </SidebarInset>
