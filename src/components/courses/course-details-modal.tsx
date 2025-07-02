@@ -15,7 +15,6 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { Separator } from '@/components/ui/separator';
-import { Badge } from '@/components/ui/badge';
 
 interface CourseDetailsModalProps {
   courseId: number | null;
@@ -25,7 +24,7 @@ interface CourseDetailsModalProps {
 
 export function CourseDetailsModal({ courseId, isOpen, onClose }: CourseDetailsModalProps) {
   const [course, setCourse] = useState<Course | null>(null);
-  const [allCourses, setAllCourses] = useState<Course[]>([]); // ✅ moved inside the component
+  const [allCourses, setAllCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
@@ -45,7 +44,7 @@ export function CourseDetailsModal({ courseId, isOpen, onClose }: CourseDetailsM
             description: `Failed to fetch course details: ${errorMessage}`,
             variant: "destructive",
           });
-          onClose(); // Close modal on error
+          onClose();
         } finally {
           setLoading(false);
         }
@@ -62,49 +61,69 @@ export function CourseDetailsModal({ courseId, isOpen, onClose }: CourseDetailsM
         <DialogHeader>
           <DialogTitle className="text-2xl font-headline">Course Details</DialogTitle>
         </DialogHeader>
+
         {loading ? (
           <div className="flex justify-center items-center h-40">
             <LoadingSpinner size={40} />
           </div>
         ) : course ? (
           <div className="space-y-4 py-4">
-            <div>
-              <h3 className="text-sm font-medium text-muted-foreground">Code</h3>
-              <p className="text-lg font-semibold">{course.code}</p>
-            </div>
-            <Separator />
-            <div>
-              <h3 className="text-sm font-medium text-muted-foreground">Name</h3>
-              <p className="text-lg">{course.name}</p>
-            </div>
-            <Separator />
-            <div>
-              <h3 className="text-sm font-medium text-muted-foreground">Description</h3>
-              <p className="text-base text-foreground/80 whitespace-pre-wrap">{course.description}</p>
-            </div>
+            
+            {/* Prerequisites (display-only, no links) */}
             {(course?.prerequisites ?? []).length > 0 && (
-              <div className="space-y-1">
-                <h3 className="text-sm font-medium text-muted-foreground">Prerequisites</h3>
+              <div className="bg-muted/30 border rounded-lg p-4 space-y-2">
+                <h3 className="text-sm font-semibold text-foreground">
+                  You must complete the following courses first:
+                </h3>
                 <div className="flex flex-wrap gap-2">
-                  {(course?.prerequisites ?? []).map((pid) => {
+                  {course.prerequisites?.map((pid) => {
                     const prereq = allCourses.find(c => c.id === pid);
                     return prereq ? (
-                      <Badge key={pid} variant="outline">
-                        {prereq.code} - {prereq.name}
-                      </Badge>
+                      <span
+                        key={pid}
+                        className="bg-orange-500 text-white font-medium rounded-full px-4 py-1 text-sm shadow"
+                      >
+                        {prereq.name}
+                      </span>
                     ) : (
-                      <Badge key={pid} variant="destructive">
+                      <span
+                        key={pid}
+                        className="bg-red-500 text-white font-medium rounded-full px-4 py-1 text-sm shadow"
+                      >
                         Unknown Course ({pid})
-                      </Badge>
+                      </span>
                     );
                   })}
                 </div>
               </div>
             )}
+            {/* Course Name */}
+            <div>
+              <h3 className="text-sm font-medium text-muted-foreground">Course Name</h3>
+              <p className="text-lg font-semibold">{course.name}</p>
+            </div>
+
+
+            <Separator />
+
+            {/* Course Code */}
+            <div>
+              <h3 className="text-sm font-medium text-muted-foreground">Code</h3>
+              <p className="text-base">{course.code}</p>
+            </div>
+
+            <Separator />
+
+            {/* Description */}
+            <div>
+              <h3 className="text-sm font-medium text-muted-foreground">Description</h3>
+              <p className="text-base text-foreground/80 whitespace-pre-wrap">{course.description}</p>
+            </div>
           </div>
         ) : (
           <DialogDescription>No course details found.</DialogDescription>
         )}
+
         <DialogClose asChild>
           <Button type="button" variant="outline" className="mt-4 w-full" onClick={onClose}>
             Close

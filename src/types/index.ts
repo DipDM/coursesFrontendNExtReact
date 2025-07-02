@@ -10,6 +10,7 @@ export interface CoursePayload {
   code: string;
   name: string;
   description: string;
+  prerequisites?: number[];
 }
 
 export type CourseFormData = {

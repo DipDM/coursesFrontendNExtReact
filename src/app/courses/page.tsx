@@ -73,7 +73,6 @@ export default function CoursesPage() {
   };
 
   const confirmDeleteCourse = async (id: number) => {
-    // Check if the course is a prerequisite for any other course
     const isUsedAsPrerequisite = courses.some(course =>
       course.prerequisites?.includes(id)
     );
@@ -93,9 +92,7 @@ export default function CoursesPage() {
     try {
       await apiDeleteCourse(id);
       toast({ title: "Success", description: "Course deleted successfully." });
-      loadCourses(); // Refresh list
-      setIsDeleteAlertOpen(false);
-      setDeletingCourse(null);
+      loadCourses();
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "An unexpected error occurred.";
       toast({
@@ -156,8 +153,11 @@ export default function CoursesPage() {
       <DeleteCourseDialog
         course={deletingCourse}
         isOpen={isDeleteAlertOpen}
-        onClose={() => { setIsDeleteAlertOpen(false); setDeletingCourse(null); }}
         onConfirm={confirmDeleteCourse}
+        onDone={() => {
+          setIsDeleteAlertOpen(false); // ✅ Close dialog only when done
+          setDeletingCourse(null);     // ✅ Reset state
+        }}
       />
 
     </AppLayout>

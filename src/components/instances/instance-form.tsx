@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { InstanceSchema, InstanceFormValues } from '@/zod-schemas';
@@ -46,7 +46,8 @@ export function InstanceForm({
   currentFilters
 }: InstanceFormProps) {
   const { toast } = useToast();
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [dotCount, setDotCount] = useState(1);
 
   const form = useForm<InstanceFormValues>({
     resolver: zodResolver(InstanceSchema),
@@ -75,6 +76,21 @@ export function InstanceForm({
       });
     }
   }, [instanceToEdit, form, courses, currentFilters, isOpen]);
+
+  useEffect(() => {
+    if (isSubmitting) {
+      const interval = setInterval(() => {
+        setDotCount((prev) => (prev % 4) + 1);
+      }, 300);
+      return () => clearInterval(interval);
+    }
+  }, [isSubmitting]);
+
+  const courseOptions = useMemo(() => courses.map(course => (
+    <SelectItem key={course.id} value={String(course.id)}>
+      {course.name} ({course.code})
+    </SelectItem>
+  )), [courses]);
 
   const onSubmit = async (values: InstanceFormValues) => {
     setIsSubmitting(true);
@@ -108,7 +124,6 @@ export function InstanceForm({
     }
   };
 
-
   if (!isOpen) return null;
 
   return (
@@ -137,11 +152,7 @@ export function InstanceForm({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {courses.map(course => (
-                        <SelectItem key={course.id} value={String(course.id)}>
-                          {course.name} ({course.code})
-                        </SelectItem>
-                      ))}
+                      {courseOptions}
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -198,11 +209,7 @@ export function InstanceForm({
                 </Button>
               </DialogClose>
               <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? (
-                  <LoadingSpinner size={20} />
-                ) : (
-                  instanceToEdit ? 'Save Changes' : 'Create Instance'
-                )}
+                {isSubmitting ? `Saving${'.'.repeat(dotCount)}` : (instanceToEdit ? 'Save Changes' : 'Create Instance')}
               </Button>
             </DialogFooter>
           </form>

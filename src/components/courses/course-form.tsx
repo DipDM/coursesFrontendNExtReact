@@ -39,6 +39,8 @@ interface CourseFormProps {
 export function CourseForm({ isOpen, onClose, onSuccess, courseToEdit, allCourses }: CourseFormProps) {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [dots, setDots] = React.useState('');
+
 
   const form = useForm<CourseFormValues>({
     resolver: zodResolver(CourseSchema),
@@ -49,6 +51,23 @@ export function CourseForm({ isOpen, onClose, onSuccess, courseToEdit, allCourse
       prerequisites: [],
     },
   });
+
+  useEffect(() => {
+    if (!isSubmitting) {
+      setDots('');
+      return;
+    }
+
+    const dotCycle = ['', '.', '..', '...'];
+    let index = 0;
+
+    const interval = setInterval(() => {
+      setDots(dotCycle[index]);
+      index = (index + 1) % dotCycle.length;
+    }, 600);
+
+    return () => clearInterval(interval);
+  }, [isSubmitting]);
 
   useEffect(() => {
     if (courseToEdit) {
@@ -74,6 +93,7 @@ export function CourseForm({ isOpen, onClose, onSuccess, courseToEdit, allCourse
         code: values.code,
         name: values.name,
         description: values.description,
+        prerequisites: values.prerequisites || [],
       };
       if (courseToEdit) {
         await updateCourse(courseToEdit.id, payload);
@@ -98,14 +118,17 @@ export function CourseForm({ isOpen, onClose, onSuccess, courseToEdit, allCourse
 
   if (!isOpen) return null;
 
+
+
+
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[425px] md:max-w-[600px] bg-card shadow-xl rounded-lg">
+      <DialogContent className="sm:max-w-[425px] md:max-w-[600px] max-h-[90vh] overflow-y-auto bg-card shadow-xl rounded-lg">
         <DialogHeader>
           <DialogTitle className="text-2xl font-headline">{courseToEdit ? 'Edit Course' : 'Create New Course'}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-1">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-1 sm:p-4">
             <FormField
               control={form.control}
               name="code"
@@ -119,6 +142,7 @@ export function CourseForm({ isOpen, onClose, onSuccess, courseToEdit, allCourse
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name="name"
@@ -150,44 +174,60 @@ export function CourseForm({ isOpen, onClose, onSuccess, courseToEdit, allCourse
               name="prerequisites"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Prerequisite Courses</FormLabel>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto">
+                  <FormLabel>Prerequisites</FormLabel>
+
+                  {/* ✅ Live Preview Above */}
+                  {field.value?.length > 0 && (
+                    <div
+                      className="mb-4 p-3 rounded-lg bg-muted/30 border transition-all duration-300 ease-in-out"
+                    >
+                      <h4 className="text-sm font-semibold text-foreground mb-2">
+                        Selected Prerequisites
+                      </h4>
+                      <div className="flex flex-wrap gap-2">
+                        {field.value.map((id) => {
+                          const selected = allCourses.find((c) => c.id === id);
+                          return selected ? (
+                            <span
+                              key={id}
+                              className="bg-orange-500 text-white font-medium rounded-full px-4 py-1 text-sm shadow transition-transform transform hover:scale-105"
+                            >
+                              {selected.code} - {selected.name}
+                            </span>
+                          ) : null;
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* ✅ Checkbox Grid Below */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-40 overflow-y-auto border rounded-md p-2 transition-opacity duration-300">
                     {allCourses
-                      .filter(c => !courseToEdit || c.id !== courseToEdit.id) // prevent self-selection
-                      .map(course => (
-                        <FormField
-                          key={course.id}
-                          control={form.control}
-                          name="prerequisites"
-                          render={({ field }) => {
-                            const checked = field.value?.includes(course.id);
-                            return (
-                              <FormItem key={course.id} className="flex items-center gap-2">
-                                <FormControl>
-                                  <input
-                                    type="checkbox"
-                                    checked={checked}
-                                    onChange={(e) => {
-                                      const newValue = e.target.checked
-                                        ? [...field.value, course.id]
-                                        : field.value.filter((id) => id !== course.id);
-                                      field.onChange(newValue);
-                                    }}
-                                  />
-                                </FormControl>
-                                <FormLabel className="text-sm font-normal">
-                                  {course.code} - {course.name}
-                                </FormLabel>
-                              </FormItem>
-                            );
-                          }}
-                        />
+                      .filter((c) => c.id !== courseToEdit?.id)
+                      .map((course) => (
+                        <label key={course.id} className="flex items-center space-x-2 text-sm">
+                          <input
+                            type="checkbox"
+                            value={course.id}
+                            checked={field.value?.includes(course.id)}
+                            onChange={(e) => {
+                              const value = parseInt(e.target.value);
+                              if (e.target.checked) {
+                                field.onChange([...(field.value || []), value]);
+                              } else {
+                                field.onChange((field.value || []).filter((id) => id !== value));
+                              }
+                            }}
+                          />
+                          <span>{course.name}</span>
+                        </label>
                       ))}
                   </div>
                   <FormMessage />
                 </FormItem>
               )}
             />
+
 
             <DialogFooter className="pt-4">
               <DialogClose asChild>
@@ -196,8 +236,17 @@ export function CourseForm({ isOpen, onClose, onSuccess, courseToEdit, allCourse
                 </Button>
               </DialogClose>
               <Button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? <LoadingSpinner size={20} /> : (courseToEdit ? 'Save Changes' : 'Create Course')}
+                {isSubmitting
+                  ? (
+                    <span className="flex items-center gap-2">
+                      
+                      <span className='text-white bg-blue-800'>Saving{dots}</span>
+                    </span>
+                  )
+                  : (courseToEdit ? 'Save Changes' : 'Create Course')
+                }
               </Button>
+
             </DialogFooter>
           </form>
         </Form>
